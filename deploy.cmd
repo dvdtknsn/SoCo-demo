@@ -1,6 +1,6 @@
 
 
-Tools\sco.exe /source Scriptsfolder{DOERTE_DEV} /target DOERTE_PROD/demopassword@localhost/XE{DOERTE_PROD} /deployallobjects /sf:%1\state_deploymentscript.sql /report:%1\change_report.html
+Tools\sco.exe /source Scriptsfolder{DOERTE_DEV} /target DOERTE_PROD/demopassword@localhost/XE{DOERTE_PROD} /deployallobjects /sf:%1\state_deploymentscript.sql /report:%1\change_report.html /deploy
 
 echo %ERRORLEVEL%
 rem IF ERRORLEVEL is 61 then all is good as we expect changes.
