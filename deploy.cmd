@@ -1,6 +1,6 @@
 
 
-Tools\sco.exe /source Scriptsfolder{DOERTE_DEV} /target DOERTE_PROD/demopassword@localhost/XE{DOERTE_PROD} /deployallobjects /sf:$(Build.ArtifactStagingDirectory)/state_deploymentscript.sql
+Tools\sco.exe /source Scriptsfolder{DOERTE_DEV} /target DOERTE_PROD/demopassword@localhost/XE{DOERTE_PROD} /deployallobjects /sf:%1/state_deploymentscript.sql
 
 echo %ERRORLEVEL%
 rem IF ERRORLEVEL is 61 then all is good as we expect changes.
