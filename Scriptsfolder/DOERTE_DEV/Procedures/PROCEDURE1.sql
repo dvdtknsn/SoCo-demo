@@ -1,0 +1,5 @@
+CREATE OR REPLACE PROCEDURE doerte_dev.PROCEDURE1 AS 
+BEGIN
+select * from helloworld;
+END PROCEDURE1;
+/
