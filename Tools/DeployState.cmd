@@ -27,6 +27,14 @@ rem     GOTO END
 rem )
 
 echo == Deployment time! ==
+rem Note: if there are no changes, the deployment script artifact won't exist so we should check this and fail the build to avoid confusion.
+if exist Artifacts/deployment_script.sql (
+    echo == Deployment script artifact found ==
+) else (
+    echo == No deployment script found - are there any changes? ==
+    SET ERRORLEVEL=1
+    GOTO END
+)
 echo on
 rem Now we apply the deployment script 
 Call exit | sqlplus SOCO_PRODUCTION/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=localhost)(Port=1521))(CONNECT_DATA=(SID=XE))) @Artifacts/deployment_script.sql

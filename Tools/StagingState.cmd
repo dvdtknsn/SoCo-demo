@@ -33,8 +33,9 @@ echo == Applying deployment script to staging database
 
 rem Note: if there are no changes, the deployment script artifact won't exist so we should check this and fail the build to avoid confusion.
 if exist Artifacts/deployment_script.sql (
-    rem file exists
+    echo == Deployment script artifact found ==
 ) else (
+    echo == No deployment script found - are there any changes? ==
     SET ERRORLEVEL=1
     GOTO END
 )
