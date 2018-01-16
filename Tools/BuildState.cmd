@@ -1,5 +1,6 @@
 
 
+"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/change_report.html
 
 echo %ERRORLEVEL%
 rem IF ERRORLEVEL is 61 we set to 0 as we expect differences
