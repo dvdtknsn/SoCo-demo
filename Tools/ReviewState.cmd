@@ -33,6 +33,7 @@ IF %ERRORLEVEL% EQU 0 (
     echo == No schema changes to deploy
     echo ========================================================================================================
     rem If required, halt the build process at this stage
+    SET ERRORLEVEL=1
     GOTO END
 )
 
