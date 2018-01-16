@@ -28,13 +28,12 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 rem Now we apply the deployment script 
-
-Call sqlplus SOCO_PRODUCTION/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=localhost)(Port=1521))(CONNECT_DATA=(SID=XE))) @Artifacts/deployment_script.sql
+Call sqlplus SOCO_STAGING/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=localhost)(Port=1521))(CONNECT_DATA=(SID=XE))) @Artifacts/deployment_script.sql
 echo SQLPLUS exit code:%ERRORLEVEL%
 
-rem and we should validate that production is equal to the state
+rem and we should validate that staging is equal to the state
 
-"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/staging_deploy_success_report.html
+"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_STAGING/demopassword@localhost/XE{SOCO_STAGING} /report:Artifacts/staging_deploy_success_report.html
 echo Staging Deployment Check:%ERRORLEVEL%
 
 :END
