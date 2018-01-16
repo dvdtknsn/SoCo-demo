@@ -22,6 +22,7 @@ IF %ERRORLEVEL% EQU 61 (
     echo == Schema changes found to deploy - generating deployment script for review
     echo ========================================================================================================
     "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /sf:Artifacts/deployment_preview.sql
+    SET ERRORLEVEL=0
     GOTO END
 )
 
@@ -34,3 +35,4 @@ IF %ERRORLEVEL% EQU 0 (
 )
 
 :END
+EXIT /B %ERRORLEVEL%
