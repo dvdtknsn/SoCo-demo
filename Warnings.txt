@@ -1,0 +1,49 @@
+Schema Compare for Oracle version:4.0.8.236: activated, serial number: 515-002-304166-615E
+Reading dependency information
+Registering database one
+Registering database two
+Comparing databases
+Found 14 differences
+Calculating dependencies
+Finding issues with deployment
+Preparing actions
+Generating actions
+Creating script text
+
+Warning: High: Table drop
+Object:  redgate_production."flyway_schema_history"
+         The table redgate_production."flyway_schema_history" will be dropped. Any data in the table will be lost.
+
+Warning: High: Table drop
+Object:  redgate_production.countries
+         The table redgate_production.countries will be dropped. Any data in the table will be lost.
+
+Warning: High: Table drop
+Object:  redgate_production.departments
+         The table redgate_production.departments will be dropped. Any data in the table will be lost.
+
+Warning: High: Table drop
+Object:  redgate_production.employees
+         The table redgate_production.employees will be dropped. Any data in the table will be lost.
+
+Warning: High: Table drop
+Object:  redgate_production.jobs
+         The table redgate_production.jobs will be dropped. Any data in the table will be lost.
+
+Warning: High: Table drop
+Object:  redgate_production.job_history
+         The table redgate_production.job_history will be dropped. Any data in the table will be lost.
+
+Warning: High: Table drop
+Object:  redgate_production.locations
+         The table redgate_production.locations will be dropped. Any data in the table will be lost.
+
+Warning: High: Table drop
+Object:  redgate_production.regions
+         The table redgate_production.regions will be dropped. Any data in the table will be lost.
+
+Warning: High: Table drop
+Object:  redgate_production.table1
+         The table redgate_production.table1 will be dropped. Any data in the table will be lost.
+
+Saving sync script Artifacts/deployment_preview.sql

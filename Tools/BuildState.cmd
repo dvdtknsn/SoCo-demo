@@ -1,3 +1,4 @@
+echo off
 rem Build is a useful test as it can fail if there are invalid objects
 
 "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_TEST/demopassword@localhost/XE{SOCO_TEST} /report:Artifacts/changes_report.html
