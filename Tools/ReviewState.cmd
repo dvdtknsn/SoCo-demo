@@ -13,7 +13,7 @@ IF %ERRORLEVEL% EQU 0 (
     echo ========================================================================================================
     echo == No schema changes to deploy
     echo ========================================================================================================
-    rem If desirable we halt the build process at this stage
+    rem If desirable we halt the build process at this stage - in Jenkins can set to "unstable"
     SET ERRORLEVEL=1
     GOTO END
 )
