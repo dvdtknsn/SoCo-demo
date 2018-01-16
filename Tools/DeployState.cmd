@@ -6,6 +6,7 @@ rem each time, comparing it to the last.
 rem If you are running the staging rehearsal as part of an automated process, the production deployment may be some time afterwards,
 rem so we can at least check that production hasn't drifted since the staging deployment.
 
+echo == Staging Drift Check ==
 rem drift check against staging
 "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source SOCO_STAGING/demopassword@localhost/XE{SOCO_STAGING} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/staging_validation_report.html
 rem we expect there to be no differences
@@ -23,6 +24,7 @@ IF %ERRORLEVEL% NEQ 0 (
     GOTO END
 )
 
+echo == Deployment time! ==
 
 rem Now we apply the deployment script 
 Call sqlplus SOCO_PRODUCTION/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=localhost)(Port=1521))(CONNECT_DATA=(SID=XE))) @Artifacts/deployment_script.sql

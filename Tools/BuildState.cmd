@@ -1,6 +1,11 @@
 echo off
 rem Build is a useful test as it can fail if there are invalid objects
 
+rem we start by rebuilding the TEST database
+
+rem Run a script to drop all objects from the TEST schema
+Call exit | sqlplus SOCO_TEST/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=localhost)(Port=1521))(CONNECT_DATA=(SID=XE))) @Tools/DropAllObjects.sql
+
 "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /deploy /i:sdwgvac /source State{SOCO_DEV} /target SOCO_TEST/demopassword@localhost/XE{SOCO_TEST} /report:Artifacts/all_objects_report.html
 
 echo %ERRORLEVEL%
