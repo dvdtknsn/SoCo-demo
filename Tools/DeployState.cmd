@@ -1,3 +1,4 @@
+echo off
 rem Here we apply the same deployment script that has been reviewed, approved and run successfully on the staging database
 rem With the state model, as the database doesn't contain information about the state it was at last deployment, 
 rem it isn't possible to check for drift at this time. To address this, run sco.exe against production on a schedule and capture the state
@@ -8,32 +9,43 @@ rem so we can at least check that production hasn't drifted since the staging de
 
 echo == Staging Drift Check ==
 rem drift check against staging
-"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source SOCO_STAGING/demopassword@localhost/XE{SOCO_STAGING} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/staging_validation_report.html
+rem TODO - we need to have saved the pre-state of staging so we can do this check
+rem "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source PreStagingState{SOCO_DEV} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/staging_validation_report.html
 rem we expect there to be no differences
 rem IF ERRORLEVEL is 0 then there are no changes.
-IF %ERRORLEVEL% EQU 0 (
-    echo ========================================================================================================
-    echo == Validation successful! Production hasn't drifted since the staging deployment rehearsal
-    echo ========================================================================================================
-)
+rem IF %ERRORLEVEL% EQU 0 (
+rem     echo ========================================================================================================
+rem     echo == Validation successful! Production hasn't drifted since the staging deployment rehearsal
+rem     echo ========================================================================================================
+rem )
 
-IF %ERRORLEVEL% NEQ 0 (
-    echo ========================================================================================================
-    echo == Validation FAILED! The production database schema is no longer consistent with production
-    echo ========================================================================================================
-    GOTO END
-)
+rem IF %ERRORLEVEL% NEQ 0 (
+rem     echo ========================================================================================================
+rem     echo == Validation FAILED! The production database schema is no longer consistent with production
+rem     echo ========================================================================================================
+rem     GOTO END
+rem )
 
 echo == Deployment time! ==
-
+echo on
 rem Now we apply the deployment script 
-Call sqlplus SOCO_PRODUCTION/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=localhost)(Port=1521))(CONNECT_DATA=(SID=XE))) @Artifacts/deployment_script.sql
+Call exit | sqlplus SOCO_PRODUCTION/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=localhost)(Port=1521))(CONNECT_DATA=(SID=XE))) @Artifacts/deployment_script.sql
 echo SQLPLUS exit code:%ERRORLEVEL%
 
 rem and we should validate that production is equal to the state
 
 "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/production_deploy_success_report.html
 echo Production Deployment Check:%ERRORLEVEL%
-
-
+IF %ERRORLEVEL% NEQ 0 (
+     echo ========================================================================================================
+     echo == Deployment FAILED! The production database schema is not equivalent to the desired state
+     echo ========================================================================================================
+     GOTO END
+ )
+IF %ERRORLEVEL% EQU 0 (
+     echo ========================================================================================================
+     echo == Congratulations - Deployment was successful!
+     echo ========================================================================================================
+     GOTO END
+ )
 :END
