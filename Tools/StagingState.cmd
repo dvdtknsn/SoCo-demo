@@ -28,7 +28,10 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 rem Now we apply the deployment script 
-Call sqlplus SOCO_STAGING/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=localhost)(Port=1521))(CONNECT_DATA=(SID=XE))) @Artifacts/deployment_script.sql
+echo == Applying deployment script to staging database
+
+echo on
+Call exit | sqlplus SOCO_STAGING/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=localhost)(Port=1521))(CONNECT_DATA=(SID=XE))) @Artifacts/deployment_script.sql
 echo SQLPLUS exit code:%ERRORLEVEL%
 
 rem and we should validate that staging is equal to the state
