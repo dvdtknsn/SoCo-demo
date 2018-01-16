@@ -1,0 +1,5 @@
+CREATE OR REPLACE FUNCTION soco_dev.DAVIDFUNC () return number AS 
+begin
+  RETURN NULL;
+end DAVIDFUNC;
+/
