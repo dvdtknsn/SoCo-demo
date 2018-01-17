@@ -54,15 +54,19 @@ echo Staging Deployment Check:%ERRORLEVEL%
 rem Here we find out if there are any warnings associated with a rollback (ie is it possible without data loss?) by generating warnings
 rem exclude target schema in the scripts using /b:e
 "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /abortonwarnings:high /b:hdre /i:sdwgvac /source:Artifacts/predeployment_snapshot.snp{SOCO_STAGING} /target SOCO_STAGING/demopassword@localhost/XE{SOCO_STAGING} /report:Artifacts/Rollback_changes_report.html /sf:Artifacts/rollback_script.sql > Artifacts\rollback_warnings.txt
-echo Staging Rollback ERRORLEVEL:%ERRORLEVEL%
+echo Staging Rollback Warnings ERRORLEVEL:%ERRORLEVEL%
 
-IF %ERRORLEVEL% EQU 0 (
+rem Exit code 61 is what we expect. It means we can run the rollback with no warnings.
+rem Exit code 61 Differences found.
+IF %ERRORLEVEL% EQU 61 (
     echo ========================================================================================================
     echo == Rollback test on staging database successful!
     echo ========================================================================================================
 )
 
-IF %ERRORLEVEL% NEQ 0 (
+rem If we get exit code 63, it means that rollback is risky.
+rem Exit code 63 Deployment warnings above threshold. Deployment aborted.
+IF %ERRORLEVEL% EQU 63 (
     echo ========================================================================================================
     echo == Rollback test produced high warnings. Please check the Rollback warnings before proceeding with a deployment.
     echo ========================================================================================================
