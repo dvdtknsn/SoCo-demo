@@ -10,21 +10,21 @@ rem so we can at least check that production hasn't drifted since the staging de
 echo == Staging Drift Check ==
 rem drift check against staging
 rem TODO - we need to have saved the pre-state of staging so we can do this check
-rem "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source PreStagingState{SOCO_DEV} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/staging_validation_report.html
+"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source:Artifacts/predeployment_snapshot.snp{SOCO_STAGING} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/drift_report.html
 rem we expect there to be no differences
 rem IF ERRORLEVEL is 0 then there are no changes.
-rem IF %ERRORLEVEL% EQU 0 (
-rem     echo ========================================================================================================
-rem     echo == Validation successful! Production hasn't drifted since the staging deployment rehearsal
-rem     echo ========================================================================================================
-rem )
+IF %ERRORLEVEL% EQU 0 (
+     echo ========================================================================================================
+     echo == Production hasn't drifted since the staging deployment rehearsal
+     echo ========================================================================================================
+)
 
-rem IF %ERRORLEVEL% NEQ 0 (
-rem     echo ========================================================================================================
-rem     echo == Validation FAILED! The production database schema is no longer consistent with production
-rem     echo ========================================================================================================
-rem     GOTO END
-rem )
+ IF %ERRORLEVEL% NEQ 0 (
+     echo ========================================================================================================
+     echo == DRIFT DETECTED! The production database schema is not at the validated starting point
+     echo ========================================================================================================
+     GOTO END
+)
 
 echo == Deployment time! ==
 rem Note: if there are no changes, the deployment script artifact won't exist so we should check this and fail the build to avoid confusion.
