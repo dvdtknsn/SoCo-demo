@@ -62,6 +62,7 @@ IF %ERRORLEVEL% EQU 61 (
     echo ========================================================================================================
     echo == Rollback test on staging database successful!
     echo ========================================================================================================
+    SET ERRORLEVEL=0
 )
 
 rem If we get exit code 63, it means that rollback is risky.
@@ -70,6 +71,7 @@ IF %ERRORLEVEL% EQU 63 (
     echo ========================================================================================================
     echo == Rollback test produced high warnings. Please check the Rollback warnings before proceeding with a deployment.
     echo ========================================================================================================
+    rem We set the ERRORLEVEL to 1, which the job will interpret as "Unstable", as rollback warnings shouldn't prevent us from choosing to deploy
     SET ERRORLEVEL=1
     GOTO END
 )
