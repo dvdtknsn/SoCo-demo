@@ -19,6 +19,8 @@ IF %ERRORLEVEL% EQU 0 (
     echo ========================================================================================================
     echo == Comparison against production has no differences => We have a valid staging database
     echo ========================================================================================================
+    rem Now we create a snapshot of staging so we can use this "version" for roll back later. 
+    "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source SOCO_STAGING/demopassword@localhost/XE{SOCO_STAGING} /snapshot:Artifacts/predeployment_snapshot.snp 
 )
 
 IF %ERRORLEVEL% NEQ 0 (
@@ -47,6 +49,27 @@ rem echo SQLPLUS exit code:%ERRORLEVEL%
 echo == Check that the deployed staging is now the same as the desired state ==
 "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_STAGING/demopassword@localhost/XE{SOCO_STAGING} /report:Artifacts/staging_deploy_success_report.html
 echo Staging Deployment Check:%ERRORLEVEL%
+
+== Rollback check ==
+rem Here we find out if there are any warnings associated with a rollback (ie is it possible without data loss?) by generating warnings
+rem exclude target schema in the scripts using /b:e
+"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /abortonwarnings:high /b:hdre /i:sdwgvac /source:Artifacts/predeployment_snapshot.snp{SOCO_STAGING} /target SOCO_STAGING/demopassword@localhost/XE{SOCO_STAGING} /report:Artifacts/Rollback_changes_report.html /sf:Artifacts/rollback_script.sql > Artifacts\rollback_warnings.txt
+echo Staging Rollback ERRORLEVEL:%ERRORLEVEL%
+
+IF %ERRORLEVEL% EQU 0 (
+    echo ========================================================================================================
+    echo == Rollback test on staging database successful!
+    echo ========================================================================================================
+)
+
+IF %ERRORLEVEL% NEQ 0 (
+    echo ========================================================================================================
+    echo == Rollback test produced high warnings. Please check the Rollback warnings before proceeding with a deployment.
+    echo ========================================================================================================
+    SET ERRORLEVEL=1
+    GOTO END
+)
+
 
 :END
 EXIT /B %ERRORLEVEL%
