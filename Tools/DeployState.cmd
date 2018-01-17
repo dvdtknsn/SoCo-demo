@@ -23,6 +23,8 @@ IF %ERRORLEVEL% EQU 0 (
      echo ========================================================================================================
      echo == DRIFT DETECTED! The production database schema is not at the validated starting point
      echo ========================================================================================================
+    rem We set the exit code to be 1 so we can set the status to unstable. This allows us to trigger the rollback job.
+     SET ERRORLEVEL=1
      GOTO END
 )
 
