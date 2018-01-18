@@ -17,8 +17,8 @@ IF %ERRORLEVEL% EQU 63 (
     echo ========================================================================================================
     echo == Rollback aborted due to high warnings. Please consider rolling back manually or from a backup.
     echo ========================================================================================================
-    rem We set the ERRORLEVEL to 1, which the job will interpret as "Unstable", as rollback warnings shouldn't prevent us from choosing to deploy
-    SET ERRORLEVEL=1
+    rem We set the ERRORLEVEL to 2, which fail the job as we can't roll back safely without user intervention
+    SET ERRORLEVEL=2
     GOTO END
 )
 
