@@ -2,7 +2,7 @@ echo off
 rem Here we restore a staging database and run a deployment rehearsal
 rem For speed, this demo will create a blank staging from the production, but ideally a restore should be used
 
-echo == Build staging database
+echo == Build staging database ==
 "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /target SOCO_STAGING/demopassword@localhost/XE{SOCO_STAGING} /deploy
 echo Build Staging Database %ERRORLEVEL%
 
