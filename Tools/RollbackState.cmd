@@ -1,6 +1,10 @@
 echo off
 
 echo == Rollback to state before deployment ==
+
+rem TODO - instead of generating rollback script here, save off as artifat and allow this to be run from here if the artifact exists
+rem The artifact shouldn't have been created if there are high warnings
+
 rem exclude target schema in the scripts using /b:e
 rem Just to be safe, we will abort if there are high warnings
 rem For this demo I'm applying the rollback using /deploy but it might be prudent to output the script using /sf:Artifacts/rollback_script.sql and to deploy manually after review

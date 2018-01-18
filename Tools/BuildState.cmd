@@ -1,27 +1,28 @@
 echo off
 rem Build is a useful test as it can fail if there are invalid objects
-
-rem we start by rebuilding the TEST database
-
+rem We start by rebuilding the TEST database
 rem Run a script to drop all objects from the TEST schema
+
+echo on
 Call exit | sqlplus SOCO_TEST/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=localhost)(Port=1521))(CONNECT_DATA=(SID=XE))) @Tools/DropAllObjects.sql
+echo off
 
-"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /deploy /i:sdwgvac /source State{SOCO_DEV} /target SOCO_TEST/demopassword@localhost/XE{SOCO_TEST} /report:Artifacts/all_objects_report.html
+echo == Build (populate) the database with the objects and generate a creation script and a report listing all objects. 
+"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /deploy /i:sdwgvac /source State{SOCO_DEV} /target SOCO_TEST/demopassword@localhost/XE{SOCO_TEST} /sf:Artifacts/database_creation_script.sql /report:Artifacts/all_objects_report.html
 
-echo %ERRORLEVEL%
+echo Build database from state:%ERRORLEVEL%
 
 rem IF ERRORLEVEL is 0 then there are no changes.
 IF %ERRORLEVEL% EQU 0 (
     echo ========================================================================================================
-    echo == No schema changes detected.
+    echo == Warning - No schema changes detected. Does the database have no schema objects?
     echo ========================================================================================================
 )
 
-
-rem IF ERRORLEVEL is 61 we set to 0 as we expect differences
+rem IF ERRORLEVEL is 61 there are differences, which we expect.
 IF %ERRORLEVEL% EQU 61 (
     echo ========================================================================================================
-    echo == Differences found. Change report all_objects_report.html saved as an artifact
+    echo == Objects were found and built. Change report all_objects_report.html saved as an artifact
     echo ========================================================================================================
     rem as wee expect differences we reset the ERRORLEVEL to 0 so the build doesn't fail 
     SET ERRORLEVEL=0
@@ -29,22 +30,24 @@ IF %ERRORLEVEL% EQU 61 (
 
 rem Now that we've built a test database, we can validate that the end state schema is consistent with the state
 
-"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_TEST/demopassword@localhost/XE{SOCO_TEST} /report:Artifacts/build_validation_report.html
-rem we expect there to be no differences
-rem IF ERRORLEVEL is 0 then there are no changes.
-IF %ERRORLEVEL% EQU 0 (
-    echo ========================================================================================================
-    echo == Validation successful! We have successfully built a database from the source state
-    echo ========================================================================================================
-    GOTO END
-)
+rem This is optional and is unlikely to fail, so could leave this out to reduce build time.
+rem "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_TEST/demopassword@localhost/XE{SOCO_TEST} /report:Artifacts/build_validation_report.html
 
-IF %ERRORLEVEL% NEQ 0 (
-    echo ========================================================================================================
-    echo == Validation FAILED! The build isn't consistent with the source
-    echo ========================================================================================================
-    GOTO END
-)
+rem There should be no differences
+rem IF ERRORLEVEL is 0 then there are no changes.
+rem IF %ERRORLEVEL% EQU 0 (
+rem     echo ========================================================================================================
+rem     echo == Validation successful! We have successfully built a database from the source state
+rem     echo ========================================================================================================
+rem     GOTO END
+rem )
+
+rem IF %ERRORLEVEL% NEQ 0 (
+rem     echo ========================================================================================================
+rem     echo == Validation FAILED! The build isn't consistent with the source
+rem     echo ========================================================================================================
+rem     GOTO END
+rem )
 
 
 :END

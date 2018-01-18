@@ -11,8 +11,9 @@ rem We abort if the deployment hasn't been successful.
 rem DRIFT CHECK
 rem Now that we've got a staging database, we can validate that the end state schema is consistent with production
 rem If it isn't, the Restore was incorrect, production has drifted, or there was a different problem
-
+echo == Check that the restored staging database is equivalent to production ==
 "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source SOCO_STAGING/demopassword@localhost/XE{SOCO_STAGING} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/staging_validation_report.html
+echo staging vs production check:%ERRORLEVEL%
 rem we expect there to be no differences
 rem IF ERRORLEVEL is 0 then there are no changes.
 IF %ERRORLEVEL% EQU 0 (
@@ -31,7 +32,7 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 rem Now we apply the deployment script 
-echo == Applying deployment script to staging database
+echo == Applying deployment script to the staging database ==
 
 rem Note: if there are no changes, the deployment script artifact won't exist so we should check this and fail the build to avoid confusion.
 if exist Artifacts/deployment_script.sql (
@@ -76,6 +77,7 @@ IF %ERRORLEVEL% EQU 63 (
     GOTO END
 )
 
+rem TODO - here we could apply the rollback script and check the resulting database against the predeployment_snapshot.snp snapshot
 
 :END
 EXIT /B %ERRORLEVEL%
