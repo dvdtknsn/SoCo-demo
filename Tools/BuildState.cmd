@@ -49,6 +49,32 @@ rem     echo ===================================================================
 rem     GOTO END
 rem )
 
+rem Now we check for invalid objects
+
+rem Save the script that lists invalid objects to a file
+echo SELECT 'Invalid Object', object_type, object_name FROM dba_objects WHERE status != 'VALID' AND owner = 'SOCO_TEST' ORDER BY object_type; > get_invalid_objects.sql
+
+rem Execute the script on the database
+echo on
+Call exit | sqlplus SOCO_TEST/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=localhost)(Port=1521))(CONNECT_DATA=(SID=XE))) @get_invalid_objects.sql > Artifacts/invalid_objects.txt
+echo off
+
+type Artifacts\invalid_objects.txt
+
+rem Now search for instances of "Invalid Object"
+ find /c "Invalid Object" Artifacts/invalid_objects.txt
+ echo finderror: %ERRORLEVEL%
+    if %errorlevel% equ 1 goto NoInvalidObjects
+    echo == Warning - Invalid objects found ==
+    rem Set exit code to 1 so we can set the build to unstable. Could also choose to fail the build if desirable.
+    SET ERRORLEVEL=1
+    goto done
+    :NoInvalidObjects
+    echo No invalid objects found!
+    SET ERRORLEVEL=0
+    goto done
+    :done
+
 
 :END
 EXIT /B %ERRORLEVEL%
