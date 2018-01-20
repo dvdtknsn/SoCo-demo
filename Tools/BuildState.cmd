@@ -57,7 +57,7 @@ echo SELECT 'Invalid Object', object_type, object_name FROM dba_objects WHERE st
 rem Execute the script on the database
 echo on
 Call exit | sqlplus SOCO_TEST/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=localhost)(Port=1521))(CONNECT_DATA=(SID=XE))) @get_invalid_objects.sql > Artifacts/invalid_objects.txt
-echo off
+rem echo off
 
 type Artifacts\invalid_objects.txt
 
