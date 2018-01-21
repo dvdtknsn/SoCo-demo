@@ -62,7 +62,8 @@ rem echo off
 type Artifacts\invalid_objects.txt
 
 rem Now search for instances of "Invalid Object"
-find /c "Invalid Object" Artifacts/invalid_objects.txt
+find /C "Invalid Object" Artifacts/invalid_objects.txt
+rem 0 returned if string found (ie, invalid objects exist). If 1 is returned, there are no invalid objects.
 echo Find Invalid Objects:%ERRORLEVEL%
     if %ERRORLEVEL% equ 1 goto NoInvalidObjects
     echo == Warning - Invalid objects found ==
