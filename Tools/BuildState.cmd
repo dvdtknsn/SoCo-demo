@@ -63,17 +63,16 @@ type Artifacts\invalid_objects.txt
 
 rem Now search for instances of "Invalid Object"
 call find /c "Invalid Object" Artifacts/invalid_objects.txt
-echo Find Exit:%ERRORLEVEL%
-if %ERRORLEVEL% equ 1 goto NoInvalidObjects
-echo == Warning - Invalid objects found ==
-rem Set exit code to 1 so we can set the build to unstable. Could also choose to fail the build if desirable.
-SET ERRORLEVEL=1
-goto done
-:NoInvalidObjects
-echo No invalid objects found!
-SET ERRORLEVEL=0
-goto done
-:done
+
+for /f %%A in ('find /c "Invalid Object" ^< Artifacts/invalid_objects.txt') do (
+  if %%A == 0 (
+    echo No Invalid Objects
+    SET ERRORLEVEL=0
+  ) else (
+    echo Invalid Objects found
+    SET ERRORLEVEL=1
+  )
+)
 
 
 :END
