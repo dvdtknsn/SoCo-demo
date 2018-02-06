@@ -7,7 +7,7 @@ rem exclude target schema in the scripts using /b:e
 
 echo Warnings exit code:%ERRORLEVEL%
 rem If the exit code is 63, the deployment warnings exceed the allowable threshold (eg, data loos may occur)
-rem This means that it is recommended to do a manual deployment, or consider adopting a migrations-based deployment approach
+rem This means that it is recommended to review, customize the script and do a manual deployment
 
 IF %ERRORLEVEL% EQU 0 (
     echo ========================================================================================================
