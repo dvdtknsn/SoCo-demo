@@ -48,7 +48,7 @@ Call exit | sqlplus SOCO_ACCEPTANCE/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL
 rem echo SQLPLUS exit code:%ERRORLEVEL%
 echo off
 echo == Check that the deployed acceptance database is now the same as the desired state ==
-"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_ACCEPTANCE/demopassword@localhost/XE{SOCO_ACCEPTANCE} /report:Artifacts/acceptance_deploy_success_report.html
+"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_ACCEPTANCE/demopassword@localhost/XE{SOCO_ACCEPTANCE} /report:Artifacts/deployment_success_report.html
 echo Acceptance Deployment Check:%ERRORLEVEL%
 
 echo == Rollback check ==
@@ -72,12 +72,12 @@ IF %ERRORLEVEL% EQU 63 (
     echo ========================================================================================================
     echo == Rollback test produced high warnings. Please check the Rollback warnings before proceeding with a deployment.
     echo ========================================================================================================
-    rem We set the ERRORLEVEL to 1, which the job will interpret as "Unstable", as rollback warnings shouldn't prevent us from choosing to deploy
-    SET ERRORLEVEL=1
+    rem To alert the user we could set the ERRORLEVEL to 1, which the Jenkins job will interpret as "Unstable".
+    rem However, rollback warnings shouldn't stop us from deploying as we should be taking backups anyway.
     GOTO END
 )
 
-rem TODO - here we could apply the rollback script and check the resulting database against the predeployment_snapshot.snp snapshot
+rem TODO - If we want to fully test the rollback here we could apply the rollback script and check the resulting database against the predeployment_snapshot.snp snapshot
 
 :END
 EXIT /B %ERRORLEVEL%
