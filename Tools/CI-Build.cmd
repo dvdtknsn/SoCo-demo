@@ -15,7 +15,7 @@ echo Build database from state:%ERRORLEVEL%
 rem IF ERRORLEVEL is 0 then there are no changes.
 IF %ERRORLEVEL% EQU 0 (
     echo ========================================================================================================
-    echo == Warning - No schema changes detected. Does the database have no schema objects?
+    echo == Warning - No schema changes detected. Does the database have any schema objects?
     echo ========================================================================================================
 )
 

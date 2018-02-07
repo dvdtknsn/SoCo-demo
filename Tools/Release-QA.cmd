@@ -8,11 +8,21 @@ rem This example will use (2). If using (1), simply duplicate the process used f
 "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_QA/demopassword@localhost/XE{SOCO_QA} /deploy
 rem NOTE - This ignores any deployment warnings as these will be picked up by the Review step.
 
+
+rem IF ERRORLEVEL is 0 there are no differences, which we don't expect during a deployment.
+IF %ERRORLEVEL% EQU 0 (
+    echo ========================================================================================================
+    echo == No changes were found to deploy! 
+    echo ========================================================================================================
+    rem Set the ERRORLEVEL to 1 so the job status is unstable to alert user
+    SET ERRORLEVEL=1
+)
+
 rem IF ERRORLEVEL is 61 there are differences, which we expect.
 IF %ERRORLEVEL% EQU 61 (
     echo ========================================================================================================
-    echo == Objects were found and deployed. 
+    echo == Changes were deployed. 
     echo ========================================================================================================
-    rem Reset the ERRORLEVEL to 0 so the build doesn't fail 
+    rem Set the ERRORLEVEL to 0 so the build doesn't fail 
     SET ERRORLEVEL=0
 )

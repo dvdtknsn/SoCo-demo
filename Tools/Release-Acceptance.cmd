@@ -38,14 +38,13 @@ rem Note: if there are no changes, the deployment script artifact won't exist so
 if exist Artifacts/deployment_script.sql (
     echo == Deployment script artifact found ==
 ) else (
-    echo == No deployment script found - are there any changes? ==
+    echo == No deployment script found - it's possible that there are no changes to deploy! ==
     SET ERRORLEVEL=1
     GOTO END
 )
-rem echo on to better troubleshoot issues with sqlplus
+rem It's useful to switch echo on to troubleshoot any issues with sqlplus
 echo on
 Call exit | sqlplus SOCO_ACCEPTANCE/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=localhost)(Port=1521))(CONNECT_DATA=(SID=XE))) @Artifacts/deployment_script.sql
-rem echo SQLPLUS exit code:%ERRORLEVEL%
 echo off
 echo == Check that the deployed acceptance database is now the same as the desired state ==
 "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_ACCEPTANCE/demopassword@localhost/XE{SOCO_ACCEPTANCE} /report:Artifacts/deployment_success_report.html
