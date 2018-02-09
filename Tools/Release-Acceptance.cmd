@@ -73,6 +73,7 @@ IF %ERRORLEVEL% EQU 63 (
     echo ========================================================================================================
     rem To alert the user we could set the ERRORLEVEL to 1, which the Jenkins job will interpret as "Unstable".
     rem However, rollback warnings shouldn't stop us from deploying as we should be taking backups anyway.
+    SET ERRORLEVEL=0
     GOTO END
 )
 
