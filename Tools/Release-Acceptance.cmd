@@ -21,7 +21,7 @@ IF %ERRORLEVEL% EQU 0 (
     echo == Comparison against production has no differences => We have a valid acceptance database
     echo ========================================================================================================
     rem Now we create a snapshot artifact of acceptance so we can use this "schema version" for the drift check and roll back later. 
-    "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source SOCO_ACCEPTANCE/demopassword@localhost/XE{SOCO_ACCEPTANCE} /snapshot:Artifacts/predeployment_snapshot.snp 
+    "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source SOCO_ACCEPTANCE/demopassword@localhost/XE{SOCO_ACCEPTANCE} /snapshot:Artifacts/predeployment_snapshot.onp 
 )
 
 IF %ERRORLEVEL% NEQ 0 (
@@ -53,7 +53,7 @@ echo Acceptance Deployment Check:%ERRORLEVEL%
 echo == Rollback check ==
 rem Here we find out if there are any warnings associated with a rollback (ie is it possible without data loss?) by generating warnings
 rem exclude target schema in the scripts using /b:e
-"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /abortonwarnings:high /b:hdre /i:sdwgvac /source:Artifacts/predeployment_snapshot.snp{SOCO_ACCEPTANCE} /target SOCO_ACCEPTANCE/demopassword@localhost/XE{SOCO_ACCEPTANCE} /report:Artifacts/Rollback_changes_report.html /sf:Artifacts/rollback_script.sql > Artifacts\rollback_warnings.txt
+"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /abortonwarnings:high /b:hdre /i:sdwgvac /source:Artifacts/predeployment_snapshot.onp{SOCO_ACCEPTANCE} /target SOCO_ACCEPTANCE/demopassword@localhost/XE{SOCO_ACCEPTANCE} /report:Artifacts/Rollback_changes_report.html /sf:Artifacts/rollback_script.sql > Artifacts\rollback_warnings.txt
 echo Acceptance Rollback Warnings ERRORLEVEL:%ERRORLEVEL%
 
 rem Exit code 61 is what we expect. It means we can run the rollback with no warnings.
@@ -77,7 +77,7 @@ IF %ERRORLEVEL% EQU 63 (
     GOTO END
 )
 
-rem TODO - If we want to fully test the rollback here we could apply the rollback script and check the resulting database against the predeployment_snapshot.snp snapshot
+rem TODO - If we want to fully test the rollback here we could apply the rollback script and check the resulting database against the predeployment_snapshot.onp snapshot
 
 :END
 EXIT /B %ERRORLEVEL%

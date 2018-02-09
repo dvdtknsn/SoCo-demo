@@ -9,7 +9,7 @@ rem so we can at least check that production hasn't drifted since the acceptance
 
 echo == Acceptance Drift Check ==
 rem We have previously saved the pre-deployment snapshot state of the acceptance database as an artifact so we can do this check
-"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source:Artifacts/predeployment_snapshot.snp{SOCO_ACCEPTANCE} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/drift_report.html
+"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source:Artifacts/predeployment_snapshot.onp{SOCO_ACCEPTANCE} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/drift_report.html
 rem we expect there to be no differences
 rem IF ERRORLEVEL is 0 then there are no changes.
 IF %ERRORLEVEL% EQU 0 (
