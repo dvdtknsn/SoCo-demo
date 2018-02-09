@@ -1,0 +1,1 @@
+CREATE INDEX soco_dev.jhist_employee_ix ON soco_dev.job_history(employee_id);

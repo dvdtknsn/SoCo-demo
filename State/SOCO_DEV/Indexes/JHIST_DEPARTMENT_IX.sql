@@ -1,0 +1,1 @@
+CREATE INDEX soco_dev.jhist_department_ix ON soco_dev.job_history(department_id);

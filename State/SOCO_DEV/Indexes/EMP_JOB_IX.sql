@@ -1,0 +1,1 @@
+CREATE INDEX soco_dev.emp_job_ix ON soco_dev.employees(job_id);
