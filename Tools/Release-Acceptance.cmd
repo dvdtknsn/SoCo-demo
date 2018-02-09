@@ -69,7 +69,7 @@ rem If we get exit code 63, it means that rollback is risky.
 rem Exit code 63 Deployment warnings above threshold. Deployment aborted.
 IF %ERRORLEVEL% EQU 63 (
     echo ========================================================================================================
-    echo == Rollback test produced high warnings. Please check the Rollback warnings before proceeding with a deployment.
+    echo == Rollback has high warnings. A rollback to the snapshot may not be possible.
     echo ========================================================================================================
     rem To alert the user we could set the ERRORLEVEL to 1, which the Jenkins job will interpret as "Unstable".
     rem However, rollback warnings shouldn't stop us from deploying as we should be taking backups anyway.
