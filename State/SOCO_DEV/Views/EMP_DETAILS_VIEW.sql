@@ -15,17 +15,16 @@ SELECT
   l.city,
   l.state_province,
   c.country_name,
-  r.region_name
+  rg.region_name
 FROM
   employees e,
   departments d,
   jobs j,
   locations l,
   countries c,
-  regions r
+  regions rg
 WHERE e.department_id = d.department_id
   AND d.location_id = l.location_id
   AND l.country_id = c.country_id
-  AND c.region_id = r.region_id
-  AND j.job_id = e.job_id
-WITH READ ONLY;
+  AND c.region_id = rg.region_id
+  AND j.job_id = e.job_id WITH READ ONLY;
