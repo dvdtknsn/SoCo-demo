@@ -8,19 +8,18 @@ echo Build Acceptance Database %ERRORLEVEL%
 
 rem We abort if the deployment hasn't been successful.
 
-rem DRIFT CHECK
-rem Now that we've got a database, we can validate that the end state schema is consistent with production
-rem If it isn't, the Restore was incorrect, production has drifted, or there was a different problem
+rem Acceptance DRIFT CHECK to validate that the schema state is consistent with production
+rem If it isn't, it could be that production has drifted since the acceptance database was provisioned
 echo == Check that the restored acceptance database is equivalent to production ==
 "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source SOCO_ACCEPTANCE/demopassword@localhost/XE{SOCO_ACCEPTANCE} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/acceptance_validation_report.html
-echo staging vs production check:%ERRORLEVEL%
-rem we expect there to be no differences
-rem IF ERRORLEVEL is 0 then there are no changes.
+echo Acceptance vs Production check:%ERRORLEVEL%
+
+rem We expect there to be no differences, with exit code 0
 IF %ERRORLEVEL% EQU 0 (
     echo ========================================================================================================
-    echo == Comparison against production has no differences => We have a valid acceptance database
+    echo == Validation successful: acceptance and production are the same
     echo ========================================================================================================
-    rem Now we create a snapshot artifact of acceptance so we can use this "schema version" for the drift check and roll back later. 
+    rem Create a schema snapshot artifact of acceptance so we can later use this to perform the production drift check and, if necessary, for roll back.
     "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source SOCO_ACCEPTANCE/demopassword@localhost/XE{SOCO_ACCEPTANCE} /snapshot:Artifacts/predeployment_snapshot.onp 
 )
 
@@ -31,10 +30,7 @@ IF %ERRORLEVEL% NEQ 0 (
     GOTO END
 )
 
-rem Now we apply the deployment script 
-echo == Applying deployment script to the acceptance database ==
-
-rem Note: if there are no changes, the deployment script artifact won't exist so we should check this and fail the build to avoid confusion.
+rem If there are no changes, the deployment script artifact won't exist so we should check this and stop the build to avoid confusion.
 if exist Artifacts/deployment_script.sql (
     echo == Deployment script artifact found ==
 ) else (
@@ -42,17 +38,18 @@ if exist Artifacts/deployment_script.sql (
     SET ERRORLEVEL=1
     GOTO END
 )
-rem It's useful to switch echo on to troubleshoot any issues with sqlplus
+
+echo == Applying deployment script to the acceptance database ==
 echo on
 Call exit | sqlplus SOCO_ACCEPTANCE/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=localhost)(Port=1521))(CONNECT_DATA=(SID=XE))) @Artifacts/deployment_script.sql
 echo off
+
 echo == Check that the deployed acceptance database is now the same as the desired state ==
 "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_ACCEPTANCE/demopassword@localhost/XE{SOCO_ACCEPTANCE} /report:Artifacts/deployment_success_report.html
 echo Acceptance Deployment Check:%ERRORLEVEL%
 
 echo == Rollback check ==
 rem Here we find out if there are any warnings associated with a rollback (ie is it possible without data loss?) by generating warnings
-rem exclude target schema in the scripts using /b:e
 "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /abortonwarnings:high /b:hdre /i:sdwgvac /source:Artifacts/predeployment_snapshot.onp{SOCO_ACCEPTANCE} /target SOCO_ACCEPTANCE/demopassword@localhost/XE{SOCO_ACCEPTANCE} /report:Artifacts/Rollback_changes_report.html /sf:Artifacts/rollback_script.sql > Artifacts\rollback_warnings.txt
 echo Acceptance Rollback Warnings ERRORLEVEL:%ERRORLEVEL%
 
