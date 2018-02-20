@@ -13,9 +13,8 @@ node {
         else
         {
             echo "Exit code: $status"
-            currentBuild.result = 'FAILURE'
+            error("Build failed because exit code $status")
         }
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/deployment_script.sql'
     }
     stage ('Release-Acceptance')    {
         bat 'call Tools\\Release-Acceptance.cmd'
