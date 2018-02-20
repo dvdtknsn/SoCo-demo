@@ -1,21 +1,20 @@
 echo off
-rem Here we apply the same deployment script that has been reviewed, approved and run successfully on the staging database
+rem Here we apply the same deployment script that has been reviewed, approved and run successfully on an acceptance or staging database
 rem With the state model, as the database doesn't contain information about the state it was at last deployment, 
 rem it isn't possible to check for drift at this time. To address this, run sco.exe against production on a schedule and capture the state
 rem each time, comparing it to the last.
 
-rem If you are running the staging rehearsal as part of an automated process, the production deployment may be some time afterwards,
-rem so we can at least check that production hasn't drifted since the staging deployment.
+rem If you are running the acceptance/staging rehearsal as part of an automated process, the production deployment may be some time afterwards,
+rem so we can at least check that production hasn't drifted since the acceptance database deployment.
 
-echo == Staging Drift Check ==
-rem drift check against staging
-rem TODO - we need to have saved the pre-state of staging so we can do this check
-"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source:Artifacts/predeployment_snapshot.snp{SOCO_STAGING} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/drift_report.html
+echo == Acceptance Drift Check ==
+rem We have previously saved the pre-deployment snapshot state of the acceptance database as an artifact so we can do this check
+"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source:Artifacts/predeployment_snapshot.onp{SOCO_ACCEPTANCE} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/drift_report.html
 rem we expect there to be no differences
 rem IF ERRORLEVEL is 0 then there are no changes.
 IF %ERRORLEVEL% EQU 0 (
      echo ========================================================================================================
-     echo == Production hasn't drifted since the staging deployment rehearsal
+     echo == Production hasn't drifted since the deployment rehearsal
      echo ========================================================================================================
 )
 

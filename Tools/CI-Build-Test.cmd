@@ -1,13 +1,13 @@
 echo off
 rem Build is a useful test as it can fail if there are invalid objects
 rem We start by rebuilding the TEST database
-rem Run a script to drop all objects from the TEST schema
 
+rem First we run a previously saved script Tools/DropAllObjects.sql to drop all objects from the TEST schema
 echo on
 Call exit | sqlplus SOCO_TEST/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=localhost)(Port=1521))(CONNECT_DATA=(SID=XE))) @Tools/DropAllObjects.sql
 echo off
 
-echo == Build (populate) the database with the objects and generate a creation script and a report listing all objects. 
+rem Build the database with the objects and generate a creation script and a report listing all objects. 
 "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /deploy /i:sdwgvac /source State{SOCO_DEV} /target SOCO_TEST/demopassword@localhost/XE{SOCO_TEST} /sf:Artifacts/database_creation_script.sql /report:Artifacts/all_objects_report.html
 
 echo Build database from state:%ERRORLEVEL%
@@ -15,7 +15,7 @@ echo Build database from state:%ERRORLEVEL%
 rem IF ERRORLEVEL is 0 then there are no changes.
 IF %ERRORLEVEL% EQU 0 (
     echo ========================================================================================================
-    echo == Warning - No schema changes detected. Does the database have no schema objects?
+    echo == Warning - No schema changes detected. Does the database have any schema objects?
     echo ========================================================================================================
 )
 
@@ -24,7 +24,7 @@ IF %ERRORLEVEL% EQU 61 (
     echo ========================================================================================================
     echo == Objects were found and built. Change report all_objects_report.html saved as an artifact
     echo ========================================================================================================
-    rem as wee expect differences we reset the ERRORLEVEL to 0 so the build doesn't fail 
+    rem Reset the ERRORLEVEL to 0 so the build doesn't fail 
     SET ERRORLEVEL=0
 )
 
@@ -59,6 +59,7 @@ echo on
 Call exit | sqlplus SOCO_TEST/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=localhost)(Port=1521))(CONNECT_DATA=(SID=XE))) @get_invalid_objects.sql > Artifacts/invalid_objects.txt
 echo off
 
+rem Type the output of the invalid objects query to the console
 type Artifacts\invalid_objects.txt
 
 rem Now search for instances of "Invalid Object"

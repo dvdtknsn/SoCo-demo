@@ -1,0 +1,1 @@
+CREATE INDEX soco_dev.loc_state_province_ix ON soco_dev.locations(state_province);

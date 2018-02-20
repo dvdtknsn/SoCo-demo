@@ -1,0 +1,1 @@
+CREATE SEQUENCE soco_dev.employees_seq NOCACHE;
