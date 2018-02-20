@@ -8,5 +8,8 @@ node {
         bat 'call Tools\\Release-Review.cmd'
         archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/deployment_script.sql'
     }
+    stage ('Release-Acceptance')    {
+        bat 'call Tools\\Release-Acceptance.cmd'
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/deployment_success_report.html, Artifacts/predeployment_snapshot.onp'
 
 }
