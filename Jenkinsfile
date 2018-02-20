@@ -2,7 +2,7 @@ node {
 
     stage ('CI-Build')    {
         bat 'call Tools\\CI-Build-Test.cmd'
-                archiveArtifacts 'Artifacts/database_creation_script.sql'
+                archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/database_creation_script.sql, Artifacts/invalid_objects.txt'
     }
     stage ('Release-Review')    {
         bat 'call Tools\\Release-Review.cmd'
@@ -11,5 +11,5 @@ node {
     stage ('Release-Acceptance')    {
         bat 'call Tools\\Release-Acceptance.cmd'
         archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/deployment_success_report.html, Artifacts/predeployment_snapshot.onp'
-
+    }
 }
