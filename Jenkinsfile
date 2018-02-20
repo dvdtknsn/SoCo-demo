@@ -5,7 +5,14 @@ node {
                 archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/database_creation_script.sql, Artifacts/invalid_objects.txt'
     }
     stage ('Release-Review')    {
-        bat returnStatus: true, script:'call Tools\\Release-Review.cmd'
+        def status = bat returnStatus: true, script:'call Tools\\Release-Review.cmd'
+            if (status == 0) {
+        // Success!
+        }
+        else
+        {
+            echo "status: $status"
+        }
         archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/deployment_script.sql'
     }
     stage ('Release-Acceptance')    {
