@@ -6,12 +6,14 @@ node {
     }
     stage ('Release-Review')    {
         def status = bat returnStatus: true, script:'call Tools\\Release-Review.cmd'
-            if (status == 0) {
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/deployment_script.sql'
+        if (status == 0) {
         // Success!
         }
         else
         {
-            echo "status: $status"
+            echo "Exit code: $status"
+            currentBuild.result = 'FAILURE'
         }
         archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/deployment_script.sql'
     }
