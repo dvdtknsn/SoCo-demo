@@ -47,7 +47,7 @@ echo off
 
 echo == Check that the deployed acceptance database is now the same as the desired state ==
 rem Commenting out in demo script for speed purposes
-rem "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_ACCEPTANCE/demopassword@localhost/XE{SOCO_ACCEPTANCE} /report:Artifacts/acceptance_deploy_success_report.html
+rem "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_ACCEPTANCE/demopassword@localhost/XE{SOCO_ACCEPTANCE} /report:Artifacts/accept_deploy_success_report.html
 rem echo Acceptance Deployment Check:%ERRORLEVEL%
 IF %ERRORLEVEL% EQU 61 (
     echo ========================================================================================================

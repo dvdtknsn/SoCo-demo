@@ -31,7 +31,7 @@ node {
     }
     stage ('Release-Acceptance')    {
         def status = bat returnStatus: true, script:'call Tools\\Release-Acceptance.cmd'
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/acceptance_deploy_success_report.html, Artifacts/predeployment_snapshot.onp'
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/accept_deploy_success_report.html, Artifacts/predeployment_snapshot.onp'
         if (status == 1) { // Drift detected
             currentBuild.result = 'ABORTED'
             error('Drift detected!')
@@ -41,7 +41,7 @@ node {
     stage ('Release-Production')    {
         input 'Deploy to production?'
         def status = bat returnStatus: true, script:'call Tools\\Release-Production.cmd'
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/production_deploy_success_report.html'
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/prod_deploy_success_report.html'
 
         if (status == 1) { // Drift detected
             currentBuild.result = 'ABORTED'

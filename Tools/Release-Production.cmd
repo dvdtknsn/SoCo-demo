@@ -38,19 +38,17 @@ echo SQLPLUS exit code:%ERRORLEVEL%
 echo off
 rem Finally we validate that production is equal to the state
 
-"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/production_deploy_success_report.html
-echo Production Deployment Check:%ERRORLEVEL%
-IF %ERRORLEVEL% NEQ 0 (
-     echo ========================================================================================================
-     echo == Deployment FAILED! The production database schema is not equivalent to the desired state
-     echo ========================================================================================================
-     GOTO END
- )
-IF %ERRORLEVEL% EQU 0 (
-     echo ========================================================================================================
-     echo == Congratulations - Deployment was successful!
-     echo ========================================================================================================
-     GOTO END
- )
+rem Not running the post-deployment validation to save time during demos
+rem "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/prod_deploy_success_report.html
+rem echo Production Deployment Check:%ERRORLEVEL%
+rem IF %ERRORLEVEL% NEQ 0 (
+rem      echo == Deployment FAILED! The production database schema is not equivalent to the desired state
+rem      GOTO END
+rem  )
+rem IF %ERRORLEVEL% EQU 0 (
+rem      echo == Congratulations - Deployment was successful!
+rem      GOTO END
+rem  )
+
 :END
 EXIT /B %ERRORLEVEL%
