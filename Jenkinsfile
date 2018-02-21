@@ -32,7 +32,5 @@ node {
         }
         echo "Exit code: $status"
     }
-    stage ('why')    {
-		 echo 'hello'
-    }
+
 }
