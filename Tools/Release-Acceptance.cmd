@@ -23,10 +23,11 @@ IF %ERRORLEVEL% EQU 0 (
     "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source SOCO_ACCEPTANCE/demopassword@localhost/XE{SOCO_ACCEPTANCE} /snapshot:Artifacts/predeployment_snapshot.onp 
 )
 
-IF %ERRORLEVEL% NEQ 0 (
+IF %ERRORLEVEL% EQ 61 (
     echo ========================================================================================================
     echo == Validation FAILED! The acceptance database schema  isn't consistent with production
     echo ========================================================================================================
+    SET ERRORLEVEL=1
     GOTO END
 )
 
@@ -35,7 +36,7 @@ if exist Artifacts/deployment_script.sql (
     echo == Deployment script artifact found ==
 ) else (
     echo == No deployment script found - it's possible that there are no changes to deploy! ==
-    SET ERRORLEVEL=1
+    SET ERRORLEVEL=2
     GOTO END
 )
 
@@ -45,8 +46,15 @@ Call exit | sqlplus SOCO_ACCEPTANCE/demopassword@(DESCRIPTION=(ADDRESS=(PROTOCOL
 echo off
 
 echo == Check that the deployed acceptance database is now the same as the desired state ==
-"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_ACCEPTANCE/demopassword@localhost/XE{SOCO_ACCEPTANCE} /report:Artifacts/deployment_success_report.html
-echo Acceptance Deployment Check:%ERRORLEVEL%
+rem Commenting out in demo script for speed purposes
+rem "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_ACCEPTANCE/demopassword@localhost/XE{SOCO_ACCEPTANCE} /report:Artifacts/acceptance_deploy_success_report.html
+rem echo Acceptance Deployment Check:%ERRORLEVEL%
+IF %ERRORLEVEL% EQU 61 (
+    echo ========================================================================================================
+    echo == Acceptance deployment validation failed
+    echo ========================================================================================================
+    GOTO END
+)
 
 echo == Rollback check ==
 rem Here we find out if there are any warnings associated with a rollback (ie is it possible without data loss?) by generating warnings
