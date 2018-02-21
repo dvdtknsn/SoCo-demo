@@ -14,7 +14,8 @@ node {
         else
         {
             echo "Exit code: $status"
-            error("Build failed because exit code $status")
+            input 'Go ahead despite warnings?'
+            // error("Build failed because exit code $status")
         }
     }
     stage ('Release-Acceptance')    {

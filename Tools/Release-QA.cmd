@@ -5,9 +5,9 @@ rem 1) Use the same process as used for deployment to Acceptance and Production
 rem 2) Simply sync the latest changes to the database
 rem This example will use (2). If using (1), simply duplicate the process used for Acceptance deployments on your QA database.
 
-"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_QA/demopassword@localhost/XE{SOCO_QA} /deploy
 rem NOTE - This ignores any deployment warnings as these will be picked up by the Review step.
 
+"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source State{SOCO_DEV} /target SOCO_QA/demopassword@localhost/XE{SOCO_QA} /deploy
 
 rem IF ERRORLEVEL is 0 there are no differences, which we don't expect during a deployment.
 IF %ERRORLEVEL% EQU 0 (
