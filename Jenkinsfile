@@ -47,11 +47,11 @@ node {
         echo ("Env: "+userInput)
         echo ("QA index"+userInput.indexOf('QA') )
         echo ("Production index"+userInput.indexOf('Production') )
-        if (userInput.indexOf('QA') !=0)
+        if (userInput.indexOf('QA') !=-1)
         {
             def status = bat returnStatus: true, script:'call Tools\\Release-QA.cmd'
         }
-        if (userInput.indexOf('Production') !=0)
+        if (userInput.indexOf('Production') !=-1)
         {
             def status = bat returnStatus: true, script:'call Tools\\Release-Production.cmd'
             archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/prod_deploy_success_report.html'
