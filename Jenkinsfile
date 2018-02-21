@@ -12,7 +12,7 @@ node {
     }
     stage ('Release-Review')    {
         def status = bat returnStatus: true, script:'call Tools\\Release-Review.cmd'
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/deployment_script.sql, Artifacts/Warnings.txt, Artifacts/changes_report.html'
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/deployment_script.sql, Artifacts/warnings.txt, Artifacts/deployment_report.html'
         if (status == 0) {
         // Success!
         }
