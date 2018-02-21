@@ -41,16 +41,23 @@ node {
         }
         echo "Exit code: $status"
     }
-    stage ('Release-Production')    {
-//        input message: 'Deploy to Production?', ok: 'Deploy'
+	 stage ('Review-Approval'){
         def userInput = input(
         id: 'userInput', message: 'Deploy?', parameters: [
         [$class: 'TextParameterDefinition', defaultValue: 'Production', description: 'Type Production to confirm deployment', name: 'env']
         ])
         echo ("Env: "+userInput)
+		  if (userInput.indexOf('Production') == -1)
+		  {
+			   currentBuild.result = 'ABORTED'
+            echo 'Deployment aborted'
+		  }
+	 }
+    stage ('Release-Production')    {
+//        input message: 'Deploy to Production?', ok: 'Deploy'
 
-        if (userInput.indexOf('Production') != -1)
-        {
+
+
             def status = bat returnStatus: true, script:'call Tools\\Release-Production.cmd'
             archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/prod_deploy_success_report.html'
 
@@ -63,7 +70,7 @@ node {
                 error('No deployment script found - something went wrong')
             }
             echo "Exit code: $status"
-        }
+        
     }    
 
 }
