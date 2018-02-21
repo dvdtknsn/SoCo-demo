@@ -33,6 +33,6 @@ node {
         echo "Exit code: $status"
     }
     stage ('Release-Acceptance')    {
-
+		 echo 'hello'
     }
 }
