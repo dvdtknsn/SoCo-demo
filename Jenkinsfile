@@ -17,10 +17,9 @@ node {
         // Success!
         }
         if (status == 1) {
-        // No changes to deploy
+        // No changes to deploy so we want to abrot but without failing the build
             echo "No changes to deploy"
             currentBuild.result = 'ABORTED'
-            error('Stopping early…')
         }
         if (status == 63) // If there are high warnings detected
         {
