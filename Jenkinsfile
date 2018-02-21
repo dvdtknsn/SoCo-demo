@@ -1,5 +1,5 @@
 node {  
-
+    checkout scm
     stage ('CI-Build')    {
         bat returnStatus: true, script:'call Tools\\CI-Build-Test.cmd'
                 archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/database_creation_script.sql, Artifacts/invalid_objects.txt'
