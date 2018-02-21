@@ -50,27 +50,32 @@ node {
         [$class: 'TextParameterDefinition', defaultValue: 'Production', description: 'Type Production to confirm deployment', name: 'env']
         ])
         echo ("Env: "+userInput)
+        if (userInput.indexOf('Production') == -1)
+        {
+            echo "No production deployment requested"
+            currentBuild.result = 'ABORTED'
+            return
+        }
     }
     
     stage ('Release-Production')    {
         
         
         unstash 'complete-workspace'
-        if (userInput.indexOf('Production') != -1)
-        {
-            def status = bat returnStatus: true, script:'call Tools\\Release-Production.cmd'
-            archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/prod_deploy_success_report.html'
 
-            if (status == 1) { // Drift detected
+        def status = bat returnStatus: true, script:'call Tools\\Release-Production.cmd'
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/prod_deploy_success_report.html'
+
+        if (status == 1) { // Drift detected
              currentBuild.result = 'ABORTED'
              error('Drift detected!')
-             }
-            if (status == 2) { // No deployment script found!
+        }
+        if (status == 2) { // No deployment script found!
                 currentBuild.result = 'ABORTED'
                 error('No deployment script found - something went wrong')
-            }
-            echo "Exit code: $status"
         }
+        echo "Exit code: $status"
+        
 
         
     }    

@@ -1,7 +1,7 @@
 echo off
 rem  We generate the deployment preview script artifact here
 
-"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /abortonwarnings:high /b:hdre /i:sdwgvac /source State{SOCO_DEV} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/deployment_report.html /scriptfile:Artifacts/deployment_script.sql > Artifacts\Warnings.txt
+"C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /abortonwarnings:high /b:hdre /i:sdwgvac /source State{SOCO_DEV} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/deployment_report.html /scriptfile:Artifacts/deployment_script.sql > Artifacts\warnings.txt
 rem Note that for this demo example /b:e is used to exclude the target schema in the deployment script
 
 echo Warnings exit code:%ERRORLEVEL%

@@ -8,15 +8,15 @@ rem We have previously saved the pre-deployment snapshot state of the acceptance
 
 rem We expect there to be no differences, so ERRORLEVEL should be 0
 IF %ERRORLEVEL% EQU 0 (
-     echo ========================================================================================================
+     echo =====================================================================================================
      echo == Production hasn't drifted since the deployment rehearsal
-     echo ========================================================================================================
+     echo =====================================================================================================
 )
 
  IF %ERRORLEVEL% NEQ 0 (
-     echo ========================================================================================================
+     echo =====================================================================================================
      echo == DRIFT DETECTED! The production database schema is not at the validated starting point
-     echo ========================================================================================================
+     echo =====================================================================================================
     rem We set the exit code to a value that will halt the deployment process.
      SET ERRORLEVEL=1
      GOTO END
