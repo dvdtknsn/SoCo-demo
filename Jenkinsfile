@@ -1,4 +1,5 @@
 node {  
+		/* Begin by cleaning artifacts folder */
 		try {	dir ('Artifacts') { deleteDir() } }
 		catch (all)	{ echo "something went wrong with deletedir" }
 
@@ -41,10 +42,15 @@ node {
 	 }
 
 	 stage ('Approval'){
+		  
+		  // wrapping in a time out so it doens't block the agent
+		  timeout(time: 5, unit: 'MINUTES') {
+     
 		  def userInput = input(
 		  id: 'userInput', message: 'Deploy?', parameters: [
 		  [$class: 'TextParameterDefinition', defaultValue: 'Production', description: 'Type Production to confirm deployment', name: 'Review deployment artifacts before proceeding']
 		  ])
+		  }
 		  echo ("Env: "+userInput)
 		  if (userInput.indexOf('Production') == -1)
 		  {
