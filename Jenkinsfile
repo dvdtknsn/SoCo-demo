@@ -1,6 +1,6 @@
 node {  
-    //dir ('Artifacts')
-    //deleteDir() /* clean artifacts folder */
+    dir ('Artifacts')
+    deleteDir() /* clean artifacts folder */
     
     stage ('CI-Build')    {
         checkout scm
@@ -51,9 +51,10 @@ node {
         ])
         echo ("Env: "+userInput)
     }
+    
     stage ('Release-Production')    {
         
-        node{
+        
         unstash 'complete-workspace'
         if (userInput.indexOf('Production') != -1)
         {
@@ -71,7 +72,7 @@ node {
             echo "Exit code: $status"
         }
 
-        }
+        
     }    
 
 }
