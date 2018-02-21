@@ -3,18 +3,18 @@ node {
 		try {	dir ('Artifacts') { deleteDir() } }
 		catch (all)	{ echo "something went wrong with deletedir" }
 
-	 stage ('CI - Build - Test')    {
+	 stage ('Build - Test')    {
 		  checkout scm
 		  bat returnStatus: true, script:'call Tools\\CI-Build-Test.cmd'
 					 archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/database_creation_script.sql, Artifacts/invalid_objects.txt'
 	 }
-	 stage ('Release-Integration')    {
+	 stage ('Integration')    {
 		 // nothing here - placeholder
 	 }
-	 stage ('Release - QA')    {
+	 stage ('QA')    {
 		  def status = bat returnStatus: true, script:'call Tools\\Release-QA.cmd'
 	 }
-	 stage ('Release - Review')    {
+	 stage ('Deployment Artifacts')    {
 		  def status = bat returnStatus: true, script:'call Tools\\Release-Review.cmd'
 		  archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/deployment_script.sql, Artifacts/warnings.txt, Artifacts/deployment_report.html'
 		  if (status == 0) {
@@ -35,7 +35,7 @@ node {
 		  }
 		  echo "Exit code: $status"
 	 }
-	stage ('Release - Acceptance')    {
+	stage ('Acceptance')    {
 		  def status = bat returnStatus: true, script:'call Tools\\Release-Acceptance.cmd'
 		  archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/accept_deploy_success_report.html, Artifacts/predeployment_snapshot.onp'
 		  if (status == 1) { // Drift detected
@@ -63,7 +63,7 @@ node {
 		  }
 	 }
 
-	 stage ('Release - Production')    {
+	 stage ('Production')    {
 
 				def status = bat returnStatus: true, script:'call Tools\\Release-Production.cmd'
 				archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/prod_deploy_success_report.html'
