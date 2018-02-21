@@ -50,12 +50,13 @@ node {
 		  id: 'userInput', message: 'Deploy?', parameters: [
 		  [$class: 'TextParameterDefinition', defaultValue: 'Production', description: 'Type Production to confirm deployment', name: 'Review deployment artifacts before proceeding']
 		  ])
-		  }
+		  
 		  echo ("Env: "+userInput)
 		  if (userInput.indexOf('Production') == -1)
 		  {
 				currentBuild.result = 'ABORTED'
 				error('Deployment aborted')
+		  }
 		  }
 	 }
 
