@@ -40,7 +40,7 @@ node {
             error('Drift detected!')
         }
         echo "Exit code: $status"
-        stash 'complete-workspace'
+        //stash 'complete-workspace'
     }
     stage ('Review-Approval') {
     //        input message: 'Deploy to Production?', ok: 'Deploy'
@@ -53,12 +53,12 @@ node {
         {
             echo "No production deployment requested"
             currentBuild.result = 'ABORTED'
-            //return
+            return
         }
     }
     stage ('Release-Production')    {
         
-        unstash 'complete-workspace'
+       // unstash 'complete-workspace'
         def status = bat returnStatus: true, script:'call Tools\\Release-Production.cmd'
         archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/prod_deploy_success_report.html'
 
