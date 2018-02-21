@@ -40,25 +40,30 @@ node {
     }
     stage ('Release-Production')    {
 //        input message: 'Deploy to Production?', ok: 'Deploy'
-def userInput = input(
- id: 'userInput', message: 'Let\'s promote?', parameters: [
- [$class: 'TextParameterDefinition', defaultValue: 'uat', description: 'Environment', name: 'env'],
- [$class: 'TextParameterDefinition', defaultValue: 'uat1', description: 'Target', name: 'target']
-])
-echo ("Env: "+userInput['env'])
-echo ("Target: "+userInput['target'])
+        def userInput = input(
+        id: 'userInput', message: 'Deploy?', parameters: [
+        [$class: 'TextParameterDefinition', defaultValue: 'QA', description: 'QA, Production', name: 'env']
+        ])
+        echo ("Env: "+userInput)
 
-        def status = bat returnStatus: true, script:'call Tools\\Release-Production.cmd'
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/prod_deploy_success_report.html'
+        if (userInput.indexOf('QA'!=0)
+        {
+            def status = bat returnStatus: true, script:'call Tools\\Release-QA.cmd'
+        }
+        if (userInput.indexOf('Production'!=0)
+        {
+            def status = bat returnStatus: true, script:'call Tools\\Release-Production.cmd'
+            archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/prod_deploy_success_report.html'
 
-        if (status == 1) { // Drift detected
-            currentBuild.result = 'ABORTED'
-            error('Drift detected!')
+            if (status == 1) { // Drift detected
+             currentBuild.result = 'ABORTED'
+             error('Drift detected!')
+             }
+            if (status == 2) { // No deployment script found!
+                currentBuild.result = 'ABORTED'
+                error('No deployment script found - something went wrong')
+            }
+            echo "Exit code: $status"
         }
-        if (status == 2) { // No deployment script found!
-            currentBuild.result = 'ABORTED'
-            error('No deployment script found - something went wrong')
-        }
-        echo "Exit code: $status"
-    }
+    }       
 }
