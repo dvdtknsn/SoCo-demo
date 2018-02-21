@@ -1,11 +1,13 @@
 node {  
-		try {}
-		dir ('Artifacts') {
-	    deleteDir() /* clean artifacts folder */
+		try {
+			dir ('Artifacts') {
+	   	 deleteDir() /* clean artifacts folder */
+			}
 		}
-}
-catch (all)
-{echo "something went wrong with deletedir"}
+		catch (all)
+		{
+			echo "something went wrong with deletedir"
+		}
 
     stage ('CI-Build')    {
         checkout scm
