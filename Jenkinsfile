@@ -27,9 +27,9 @@ node {
         }
         if (status == 1) {
         // No changes to deploy so we want to abrot but without failing the build
-            echo "No changes to deploy"
             currentBuild.result = 'ABORTED'
-				return
+				error ('No changes to deploy')
+            
         }
         if (status == 63) // If there are high warnings detected
         {
@@ -43,7 +43,6 @@ stage ('Release-Acceptance')    {
         def status = bat returnStatus: true, script:'call Tools\\Release-Acceptance.cmd'
         archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/accept_deploy_success_report.html, Artifacts/predeployment_snapshot.onp'
         if (status == 1) { // Drift detected
-            currentBuild.result = 'ABORTED'
             error('Drift detected!')
         }
         echo "Exit code: $status"
@@ -58,7 +57,7 @@ stage ('Release-Acceptance')    {
 		  if (userInput.indexOf('Production') == -1)
 		  {
 			   currentBuild.result = 'ABORTED'
-            echo 'Deployment aborted'
+            error('Deployment aborted')
 		  }
 	 }
 
@@ -76,7 +75,6 @@ stage ('Release-Acceptance')    {
              error('Drift detected!')
              }
             if (status == 2) { // No deployment script found!
-                currentBuild.result = 'ABORTED'
                 error('No deployment script found - something went wrong')
             }
             echo "Exit code: $status"
