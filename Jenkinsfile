@@ -1,12 +1,10 @@
 node {  
-	try {
-    dir ('Artifacts')
-    deleteDir() /* clean artifacts folder */
-	}
-	
+
+
     stage ('CI-Build')    {
         checkout scm
-
+    dir ('Artifacts')
+    deleteDir() /* clean artifacts folder */
         bat returnStatus: true, script:'call Tools\\CI-Build-Test.cmd'
                 archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/database_creation_script.sql, Artifacts/invalid_objects.txt'
     }
