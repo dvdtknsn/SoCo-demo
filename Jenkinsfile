@@ -29,6 +29,7 @@ node {
         // No changes to deploy so we want to abrot but without failing the build
             echo "No changes to deploy"
             currentBuild.result = 'ABORTED'
+				return
         }
         if (status == 63) // If there are high warnings detected
         {
@@ -48,7 +49,7 @@ stage ('Release-Acceptance')    {
         echo "Exit code: $status"
     }
 
-    stage ('Review-Approval'){
+    stage ('Approval'){
         def userInput = input(
         id: 'userInput', message: 'Deploy?', parameters: [
         [$class: 'TextParameterDefinition', defaultValue: 'Production', description: 'Type Production to confirm deployment', name: 'env']
