@@ -1,17 +1,14 @@
 node {  
-
+		try {}
+		dir ('Artifacts') {
+	    deleteDir() /* clean artifacts folder */
+		}
+}
+catch (all)
+{echo "something went wrong with deletedir"}
 
     stage ('CI-Build')    {
         checkout scm
-    try{
-		 dir ('Artifacts')
-	    deleteDir() /* clean artifacts folder */
-	 }
-	 catch (all)
-	 {
-		 echo "something went wrong with deletedir"
-	 }
-
         bat returnStatus: true, script:'call Tools\\CI-Build-Test.cmd'
                 archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/database_creation_script.sql, Artifacts/invalid_objects.txt'
     }
