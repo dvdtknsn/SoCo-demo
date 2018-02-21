@@ -32,13 +32,9 @@ node {
         bat 'call Tools\\Release-Acceptance.cmd'
         archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/deployment_success_report.html, Artifacts/predeployment_snapshot.onp'
     }
-    stage ('Deploy Approval')    {
+    stage ('Release-Production')    {
         input 'Deploy to production?'
-    }
-    node {
-        stage ('Release-Production')    {
-            bat 'call Tools\\Release-Production.cmd'
-            archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/production_deploy_success_report.html'
-        }
+        bat 'call Tools\\Release-Production.cmd'
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/production_deploy_success_report.html'
     }
 }
