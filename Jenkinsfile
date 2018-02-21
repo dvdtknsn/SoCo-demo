@@ -8,7 +8,8 @@ node {
 		  bat returnStatus: true, script:'call Tools\\CI-Build-Test.cmd'
 					 archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/database_creation_script.sql, Artifacts/invalid_objects.txt'
 	 }
-	 stage ('CI-Integration')    {
+	 stage ('Release-Integration')    {
+		 // nothing here - placeholder
 	 }
 	 stage ('Release-QA')    {
 		  def status = bat returnStatus: true, script:'call Tools\\Release-QA.cmd'
