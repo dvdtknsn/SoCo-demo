@@ -3,7 +3,7 @@ node {
 		try {	dir ('Artifacts') { deleteDir() } }
 		catch (all)	{ echo "something went wrong with deletedir" }
 
-	 stage ('CI-Build')    {
+	 stage ('CI - Build - Test')    {
 		  checkout scm
 		  bat returnStatus: true, script:'call Tools\\CI-Build-Test.cmd'
 					 archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/database_creation_script.sql, Artifacts/invalid_objects.txt'
@@ -11,10 +11,10 @@ node {
 	 stage ('Release-Integration')    {
 		 // nothing here - placeholder
 	 }
-	 stage ('Release-QA')    {
+	 stage ('Release - QA')    {
 		  def status = bat returnStatus: true, script:'call Tools\\Release-QA.cmd'
 	 }
-	 stage ('Release-Review')    {
+	 stage ('Release - Review')    {
 		  def status = bat returnStatus: true, script:'call Tools\\Release-Review.cmd'
 		  archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/deployment_script.sql, Artifacts/warnings.txt, Artifacts/deployment_report.html'
 		  if (status == 0) {
@@ -29,14 +29,13 @@ node {
 		  {
 				echo "Differences found"
 			  timeout(time: 1, unit: 'MINUTES') {
-
 					input 'High warnings detected - abort or go ahead anyway?'
 			  }
 				// error("Build failed because exit code $status")
 		  }
 		  echo "Exit code: $status"
 	 }
-	stage ('Release-Acceptance')    {
+	stage ('Release - Acceptance')    {
 		  def status = bat returnStatus: true, script:'call Tools\\Release-Acceptance.cmd'
 		  archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/accept_deploy_success_report.html, Artifacts/predeployment_snapshot.onp'
 		  if (status == 1) { // Drift detected
@@ -45,27 +44,26 @@ node {
 		  echo "Exit code: $status"
 	 }
 
-	 stage ('Approval'){
+	 stage ('Manual Approval Step'){
 		  
-		  // wrapping in a time out so it doens't block the agent and simply fails the build after two minutes if there's no user intervention
+		  // wrapping in a time out so it doesn't block the agent and simply fails the build after two minutes if there's no user intervention
 		  timeout(time: 3, unit: 'MINUTES') {
      
-		  def userInput = input(
-		  id: 'userInput', message: 'Deploy?', parameters: [
-		  [$class: 'TextParameterDefinition', defaultValue: 'Production', description: 'Type Production to confirm deployment', name: 'Review deployment artifacts before proceeding']
-		  ])
+		  		def userInput = input(
+		  		id: 'userInput', message: 'Deploy?', parameters: [
+		  		[$class: 'TextParameterDefinition', defaultValue: 'Production', description: 'Type Production to confirm deployment', name: 'Review deployment artifacts before proceeding']
+		  		])
 		  
-		  echo ("Env: "+userInput)
-		  if (userInput.indexOf('Production') == -1)
-		  {
-				currentBuild.result = 'ABORTED'
-				error('Deployment aborted')
-		  }
+		  		echo ("Env: "+userInput)
+		  		if (userInput.indexOf('Production') == -1)
+		  		{
+					currentBuild.result = 'ABORTED'
+					error('Deployment aborted')
+		  		}
 		  }
 	 }
 
-	 stage ('Release-Production')    {
-//        input message: 'Deploy to Production?', ok: 'Deploy'
+	 stage ('Release - Production')    {
 
 				def status = bat returnStatus: true, script:'call Tools\\Release-Production.cmd'
 				archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/prod_deploy_success_report.html'
