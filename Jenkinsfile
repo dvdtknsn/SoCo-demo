@@ -32,7 +32,7 @@ node {
         }
         echo "Exit code: $status"
     }
-    stage ('Release-Acceptance')    {
+    stage ('why')    {
 		 echo 'hello'
     }
 }
