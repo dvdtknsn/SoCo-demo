@@ -41,25 +41,4 @@ node {
         }
         echo "Exit code: $status"
     }
-
-    stage ('Release-Production')    {
-//        input message: 'Deploy to Production?', ok: 'Deploy'
-
-
-
-            def status = bat returnStatus: true, script:'call Tools\\Release-Production.cmd'
-            archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/prod_deploy_success_report.html'
-
-            if (status == 1) { // Drift detected
-             currentBuild.result = 'ABORTED'
-             error('Drift detected!')
-             }
-            if (status == 2) { // No deployment script found!
-                currentBuild.result = 'ABORTED'
-                error('No deployment script found - something went wrong')
-            }
-            echo "Exit code: $status"
-        
-    }    
-
 }
