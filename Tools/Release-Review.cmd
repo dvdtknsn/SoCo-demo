@@ -25,6 +25,8 @@ IF %ERRORLEVEL% EQU 63 (
     rem Here we run the same comparison without /abortonwarnings to generate the deployment script as warnings abort the generation of the deployment script
     rem It is useful to keep the deployment script artifact for troublshooting purposes, or as the starting point for a manual deployment
     "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /b:hdre /i:sdwgvac /source State{SOCO_DEV} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/changes_report.html /sf:Artifacts/deployment_script.sql
+    rem Set the exit code back to 63 as the previous invocaion of sco.exe will reset this.
+    SET ERRORLEVEL=63
     GOTO END
 )
 
@@ -33,6 +35,7 @@ IF %ERRORLEVEL% EQU 61 (
     echo ========================================================================================================
     echo == Schema changes found to deploy - generating deployment script for review
     echo ========================================================================================================
+    rem Set ERROLEVEL to 0 so the build job doesn't fail
     SET ERRORLEVEL=0
     rem "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /b:hdre /i:sdwgvac /source State{SOCO_DEV} /target SOCO_PRODUCTION/demopassword@localhost/XE{SOCO_PRODUCTION} /report:Artifacts/changes_report.html /sf:Artifacts/deployment_script.sql
     GOTO END

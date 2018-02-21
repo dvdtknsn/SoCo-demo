@@ -11,12 +11,20 @@ node {
         if (status == 0) {
         // Success!
         }
-        else
+        if (status == 1) {
+        // No changes to deploy
+            echo "No changes to deploy"
+            currentBuild.result = 'ABORTED'
+            error('Stopping early…')
+        return
+        }
+        if (status == 63) // If there are high warnings detected
         {
-            echo "Exit code: $status"
+            echo "Differences found"
             input 'Go ahead despite warnings?'
             // error("Build failed because exit code $status")
         }
+        echo "Exit code: $status"
     }
     stage ('Release-Acceptance')    {
         bat 'call Tools\\Release-Acceptance.cmd'
