@@ -1,4 +1,7 @@
 node {  
+
+    deleteDir() /* clean up our workspace */
+    
     stage ('CI-Build')    {
         checkout scm
 
@@ -70,10 +73,5 @@ node {
             echo "Exit code: $status"
         }
     }    
-    post {
-        always {
-            echo 'Post build clean-up'
-            deleteDir() /* clean up our workspace */
-        }
-    }   
+
 }
