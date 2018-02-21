@@ -27,7 +27,10 @@ node {
 		  if (status == 63) // If there are high warnings detected
 		  {
 				echo "Differences found"
-				input 'High warnings detected - abort or go ahead anyway?'
+			  timeout(time: 1, unit: 'MINUTES') {
+
+					input 'High warnings detected - abort or go ahead anyway?'
+			  }
 				// error("Build failed because exit code $status")
 		  }
 		  echo "Exit code: $status"
@@ -44,7 +47,7 @@ node {
 	 stage ('Approval'){
 		  
 		  // wrapping in a time out so it doens't block the agent and simply fails the build after two minutes if there's no user intervention
-		  timeout(time: 1, unit: 'MINUTES') {
+		  timeout(time: 3, unit: 'MINUTES') {
      
 		  def userInput = input(
 		  id: 'userInput', message: 'Deploy?', parameters: [
