@@ -1,6 +1,6 @@
 node {  
-
-    deleteDir() /* clean up our workspace */
+    dir ('Artifacts')
+    deleteDir() /* clean artifacts folder */
     
     stage ('CI-Build')    {
         checkout scm
