@@ -45,19 +45,11 @@ node {
 //        input message: 'Deploy to Production?', ok: 'Deploy'
         def userInput = input(
         id: 'userInput', message: 'Deploy?', parameters: [
-        [$class: 'TextParameterDefinition', defaultValue: 'QA', description: 'QA, Production', name: 'env']
+        [$class: 'TextParameterDefinition', defaultValue: 'Production', description: 'Type Production to confirm deployment', name: 'env']
         ])
         echo ("Env: "+userInput)
-        echo ("QA index"+userInput.indexOf('QA') )
-        echo ("Production index"+userInput.indexOf('Production') )
 
-        if (userInput.indexOf('QA') != -1)
-        {
-            echo ("QA index:"+userInput.indexOf('QA') )
-            def status = bat returnStatus: true, script:'call Tools\\Release-QA.cmd'
-        }
         if (userInput.indexOf('Production') != -1)
-        echo ("Production index:"+userInput.indexOf('Production') )
         {
             def status = bat returnStatus: true, script:'call Tools\\Release-Production.cmd'
             archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/prod_deploy_success_report.html'
