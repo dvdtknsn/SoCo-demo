@@ -45,7 +45,8 @@ node {
         [$class: 'TextParameterDefinition', defaultValue: 'QA', description: 'QA, Production', name: 'env']
         ])
         echo ("Env: "+userInput)
-
+        echo ("QA index"+userInput.indexOf('QA') )
+        echo ("Production index"+userInput.indexOf('Production') )
         if (userInput.indexOf('QA') !=0)
         {
             def status = bat returnStatus: true, script:'call Tools\\Release-QA.cmd'
