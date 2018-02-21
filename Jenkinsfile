@@ -7,7 +7,7 @@ node {
 		 dir ('Artifacts')
 	    deleteDir() /* clean artifacts folder */
 	 }
-	 catch
+	 catch (all)
 	 {
 		 echo "something went wrong with deletedir"
 	 }
