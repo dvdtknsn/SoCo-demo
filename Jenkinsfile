@@ -42,8 +42,7 @@ node {
         echo "Exit code: $status"
         stash 'complete-workspace'
     }
-    stage ('Review-Approval')
-    {
+    stage ('Review-Approval') {
     //        input message: 'Deploy to Production?', ok: 'Deploy'
         def userInput = input(
         id: 'userInput', message: 'Deploy?', parameters: [
@@ -54,15 +53,12 @@ node {
         {
             echo "No production deployment requested"
             currentBuild.result = 'ABORTED'
-            return
+            //return
         }
     }
-    
     stage ('Release-Production')    {
         
-        
         unstash 'complete-workspace'
-
         def status = bat returnStatus: true, script:'call Tools\\Release-Production.cmd'
         archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/prod_deploy_success_report.html'
 
@@ -74,10 +70,8 @@ node {
                 currentBuild.result = 'ABORTED'
                 error('No deployment script found - something went wrong')
         }
-        echo "Exit code: $status"
-        
-
-        
+        echo "Exit code: $status"        
     }    
 
 }
+
