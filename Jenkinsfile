@@ -1,6 +1,6 @@
 node {  
-    //dir ('Artifacts')
-    //deleteDir() /* clean artifacts folder */
+    dir ('Artifacts')
+    deleteDir() /* clean artifacts folder */
     
     stage ('CI-Build')    {
         checkout scm
@@ -32,13 +32,5 @@ node {
         }
         echo "Exit code: $status"
     }
-    stage ('Release-Acceptance')    {
-        def status = bat returnStatus: true, script:'call Tools\\Release-Acceptance.cmd'
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'Artifacts/accept_deploy_success_report.html, Artifacts/predeployment_snapshot.onp'
-        if (status == 1) { // Drift detected
-            currentBuild.result = 'ABORTED'
-            error('Drift detected!')
-        }
-        echo "Exit code: $status"
-    }
+
 }
