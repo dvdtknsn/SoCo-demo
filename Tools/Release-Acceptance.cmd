@@ -23,7 +23,7 @@ IF %ERRORLEVEL% EQU 0 (
     "C:\Program Files\Red Gate\Schema Compare for Oracle 4\sco.exe" /i:sdwgvac /source SOCO_ACCEPTANCE/demopassword@localhost/XE{SOCO_ACCEPTANCE} /snapshot:Artifacts/predeployment_snapshot.onp 
 )
 
-IF %ERRORLEVEL% EQ 61 (
+IF %ERRORLEVEL% EQU 61 (
     echo ========================================================================================================
     echo == Validation FAILED! The acceptance database schema  isn't consistent with production
     echo ========================================================================================================
