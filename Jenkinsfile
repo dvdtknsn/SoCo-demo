@@ -43,8 +43,8 @@ node {
 
 	 stage ('Approval'){
 		  
-		  // wrapping in a time out so it doens't block the agent
-		  timeout(time: 5, unit: 'MINUTES') {
+		  // wrapping in a time out so it doens't block the agent and simply fails the build after two minutes if there's no user intervention
+		  timeout(time: 1, unit: 'MINUTES') {
      
 		  def userInput = input(
 		  id: 'userInput', message: 'Deploy?', parameters: [
