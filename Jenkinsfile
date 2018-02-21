@@ -40,15 +40,21 @@ node {
             error('Drift detected!')
         }
         echo "Exit code: $status"
+        stash 'complete-workspace'
     }
-    stage ('Release-Production')    {
-//        input message: 'Deploy to Production?', ok: 'Deploy'
+    stage ('Review-Approval')
+    {
+    //        input message: 'Deploy to Production?', ok: 'Deploy'
         def userInput = input(
         id: 'userInput', message: 'Deploy?', parameters: [
         [$class: 'TextParameterDefinition', defaultValue: 'Production', description: 'Type Production to confirm deployment', name: 'env']
         ])
         echo ("Env: "+userInput)
-
+    }
+    stage ('Release-Production')    {
+        
+        node{
+        unstash 'complete-workspace'
         if (userInput.indexOf('Production') != -1)
         {
             def status = bat returnStatus: true, script:'call Tools\\Release-Production.cmd'
@@ -63,6 +69,8 @@ node {
                 error('No deployment script found - something went wrong')
             }
             echo "Exit code: $status"
+        }
+
         }
     }    
 
