@@ -4,10 +4,11 @@ node {
 		catch (all)	{ echo "something went wrong with deletedir" }
 
 	 stage ('Build - Test')    {
-		  checkout scm
-		  bat returnStatus: true, script:'call Tools\\CI-Build-Test.cmd'
-			junit allowEmptyResults: true, testResults: 'Artifacts/test_results.xml'
-		 archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/database_creation_script.sql, Artifacts/invalid_objects.txt'
+		  	checkout scm
+		  	bat returnStatus: true, script:'call Tools\\CI-Build-Test.cmd'
+			def status = junit allowEmptyResults: true, testResults: 'Artifacts/test_results.xml'
+			echo "Exit code unit testing: $status"
+		 	archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/database_creation_script.sql, Artifacts/invalid_objects.txt'
 	 }
 	 stage ('Integration')    {
 		 // nothing here - placeholder
