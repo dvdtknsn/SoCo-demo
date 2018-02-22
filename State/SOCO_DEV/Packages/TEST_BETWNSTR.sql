@@ -8,5 +8,8 @@ CREATE OR REPLACE package test_betwnstr as
   -- %test(Returns substring when start position is zero)
   procedure zero_start_position;
 
+  -- %test(More between function)
+  procedure ut_betwn;
+
 end;
 /
