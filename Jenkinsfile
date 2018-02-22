@@ -6,7 +6,6 @@ node {
 	 stage ('Build - Test')    {
 		  	checkout scm
 		  	bat returnStatus: true, script:'call Tools\\CI-Build-Test.cmd'
-			echo "Exit code CI build test: $returnStatus"
 		 	archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/database_creation_script.sql, Artifacts/invalid_objects.txt'
 	 }
 	 stage ('Integration')    {
