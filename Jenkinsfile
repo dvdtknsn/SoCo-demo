@@ -8,7 +8,7 @@ node {
 		  	def status = bat returnStatus: true, script:'call Tools\\CI-Build.cmd'
 		 	archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/database_creation_script.sql, Artifacts/invalid_objects.txt'
 			if (status ==1) // invalid object detected
-			  timeout(time: 2, unit: 'MINUTES') { // we will abort if there is no intervention in 2 minutes 
+			  timeout(time: 3, unit: 'MINUTES') { // we will abort if there is no intervention in 3 minutes 
 					input 'Invalid object(s) detected - abort or go ahead anyway?'
 			  }
 		 	archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/database_creation_script.sql, Artifacts/invalid_objects.txt'
@@ -56,8 +56,8 @@ node {
 
 	 stage ('Manual Approval Step'){
 		  
-		  // wrapping in a time out so it doesn't block the agent and simply fails the build after two minutes if there's no user intervention
-		  timeout(time: 3, unit: 'MINUTES') {
+		  // wrapping in a time out so it doesn't block the agent and simply fails the build after 5 minutes if there's no user intervention
+		  timeout(time: 5, unit: 'MINUTES') {
      
 		  		def userInput = input(
 		  		id: 'userInput', message: 'Deploy?', parameters: [
