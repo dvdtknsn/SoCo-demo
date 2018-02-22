@@ -5,7 +5,7 @@ node {
 
 	 stage ('Build')    {
 		  	checkout scm
-		  	def status = bat returnStatus: true, script:'call Tools\\CI-Build-Test.cmd'
+		  	def status = bat returnStatus: true, script:'call Tools\\CI-Build.cmd'
 		 	archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/database_creation_script.sql, Artifacts/invalid_objects.txt'
 			if (status ==1) // invalid object detected
 			  timeout(time: 2, unit: 'MINUTES') { // we will abort if there is no intervention in 2 minutes 
