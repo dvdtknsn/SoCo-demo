@@ -3,13 +3,20 @@ node {
 		try {	dir ('Artifacts') { deleteDir() } }
 		catch (all)	{ echo "something went wrong with deletedir" }
 
-	 stage ('Build - Test')    {
+	 stage ('Build')    {
 		  	checkout scm
-		  	bat returnStatus: true, script:'call Tools\\CI-Build-Test.cmd'
-		 	def status = junit 'Artifacts/*.xml'
-			echo "Exit code unit testing: $status"
-
+		  	def status = bat returnStatus: true, script:'call Tools\\CI-Build-Test.cmd'
 		 	archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/database_creation_script.sql, Artifacts/invalid_objects.txt'
+			if (status ==1) // invalid object detected
+			  timeout(time: 2, unit: 'MINUTES') { // we will abort if there is no intervention in 2 minutes 
+					input 'Invalid object(s) detected - abort or go ahead anyway?'
+			  }
+		 	archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/database_creation_script.sql, Artifacts/invalid_objects.txt'
+	 }
+	 stage ('Unit Test')    {
+		  	bat returnStatus: true, script:'call Tools\\CI-Unit-Test.cmd'
+		 	def status = junit 'Artifacts/test_results.xml'
+		 	archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/test_results.xml'
 	 }
 	 stage ('Integration')    {
 		 // nothing here - placeholder
