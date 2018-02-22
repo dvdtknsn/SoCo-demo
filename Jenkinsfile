@@ -6,6 +6,9 @@ node {
 	 stage ('Build - Test')    {
 		  	checkout scm
 		  	bat returnStatus: true, script:'call Tools\\CI-Build-Test.cmd'
+		 	def status = junit 'Artifacts/*.xml'
+			echo "Exit code unit testing: $status"
+
 		 	archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/database_creation_script.sql, Artifacts/invalid_objects.txt'
 	 }
 	 stage ('Integration')    {
@@ -78,10 +81,5 @@ node {
 				echo "Exit code: $status"
 		  
 	 }   
-	 post{
-		 always {
-		 	def status = junit 'Artifacts/test_results.xml'
-			echo "Exit code unit testing: $status"
-		 }
-	 }
+
 }
