@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE soco_dev.add_job_history
+CREATE OR REPLACE PROCEDURE add_job_history
   (  p_emp_id          job_history.employee_id%type
    , p_start_date      job_history.start_date%type
    , p_end_date        job_history.end_date%type
