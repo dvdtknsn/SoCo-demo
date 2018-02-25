@@ -38,7 +38,7 @@ node {
 		  if (status == 63) // If there are high warnings detected
 		  {
 				echo "Differences found"
-			  timeout(time: 1, unit: 'MINUTES') {
+			  timeout(time: 3, unit: 'MINUTES') {
 					input 'High warnings detected - abort or go ahead anyway?'
 			  }
 				// error("Build failed because exit code $status")
