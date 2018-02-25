@@ -16,6 +16,7 @@ node {
 	 stage ('Unit Test')    {
 		  	bat returnStatus: true, script:'call Tools\\CI-Unit-Test.cmd'
 		 	def status = junit 'Artifacts/test_results.xml'
+			echo "JUnit exit code: $status"
 		 	archiveArtifacts allowEmptyArchive: true, artifacts:'Artifacts/test_results.xml'
 	 }
 	 stage ('Integration')    {
